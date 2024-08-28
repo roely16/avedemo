@@ -1,10 +1,8 @@
 import { View, SafeAreaView, StyleSheet } from 'react-native'
+import { Link, router } from 'expo-router';
 import { Text, TextInput, Button, Divider } from 'react-native-paper'
-import { useAuth0 } from 'react-native-auth0';
 
 export default function Login(){
-
-  const { authorize } = useAuth0();
 
   const Header = () => {
     return (
@@ -18,7 +16,7 @@ export default function Login(){
   const Form = () => {
 
     const onSubmit = async () => {
-      await authorize();
+      router.push('/(tabs)');
     };
     return (
       <View style={styles.form}>
@@ -36,7 +34,7 @@ export default function Login(){
   }
 
   const OptionsDivider = () => {
-    return <Divider style={{ marginVertical: 40 }} />;
+    return <Divider style={styles.divider} />;
   };
 
   const SocialLogin = () => {
@@ -50,16 +48,18 @@ export default function Login(){
 
   const SignUpOption = () => {
     return (
-      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
+      <View style={styles.signUpContainer}>
         <Text variant='bodyMedium'>Don't have an account? </Text>
-        <Text variant='bodyMedium' style={{ color: 'blue' }}>Sign up</Text>
+        <Link href="/signup">
+          <Text variant='bodyMedium' style={styles.signUpLink}>Sign up</Text>
+        </Link>
       </View>
     )
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ paddingHorizontal: 10, marginTop: 30 }}>
+      <View style={styles.contentContainer}>
         <Header />
         <Form />
         <OptionsDivider />
@@ -73,6 +73,10 @@ export default function Login(){
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  contentContainer: {
+    paddingHorizontal: 10,
+    marginTop: 30
   },
   form: {
     marginTop: 30
@@ -89,5 +93,16 @@ const styles = StyleSheet.create({
   },
   socialLoginContainer: {
     marginTop: 0
+  },
+  signUpContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20
+  },
+  signUpLink: {
+    color: 'blue'
+  },
+  divider: {
+    marginVertical: 40
   }
 })
