@@ -1,10 +1,19 @@
 import { View, SafeAreaView, StyleSheet } from 'react-native'
-import { Text, TextInput, Button } from 'react-native-paper'
+import { Text, TextInput, Button, Divider } from 'react-native-paper'
 import { useAuth0 } from 'react-native-auth0';
 
 export default function Login(){
 
   const { authorize } = useAuth0();
+
+  const Header = () => {
+    return (
+      <View>
+        <Text variant='displaySmall'>Login Here</Text>
+        <Text variant="headlineSmall">Sign in to your account</Text>
+      </View>
+    )
+  };
 
   const Form = () => {
 
@@ -25,12 +34,37 @@ export default function Login(){
       </View>
     )
   }
+
+  const OptionsDivider = () => {
+    return <Divider style={{ marginVertical: 40 }} />;
+  };
+
+  const SocialLogin = () => {
+    return (
+      <View style={styles.socialLoginContainer}>
+        <Button icon="google" style={[styles.button, { marginBottom: 20 }]} mode="contained">Sign in with Google</Button>
+        <Button icon="apple" style={styles.button} mode="contained">Sign in with Apple</Button>
+      </View>
+    )
+  };
+
+  const SignUpOption = () => {
+    return (
+      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
+        <Text variant='bodyMedium'>Don't have an account? </Text>
+        <Text variant='bodyMedium' style={{ color: 'blue' }}>Sign up</Text>
+      </View>
+    )
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ paddingHorizontal: 10 }}>
-        <Text variant='displaySmall'>Login Here</Text>
-        <Text variant="headlineSmall">Sign in to your account</Text>
+      <View style={{ paddingHorizontal: 10, marginTop: 30 }}>
+        <Header />
         <Form />
+        <OptionsDivider />
+        <SocialLogin />
+        <SignUpOption />
       </View>
     </SafeAreaView>
   )
@@ -46,8 +80,14 @@ const styles = StyleSheet.create({
   passwordContainer: {
     marginTop: 20
   },
+  button: {
+    borderRadius: 10
+  },
   confirmButton: {
     marginTop: 20,
     borderRadius: 10
+  },
+  socialLoginContainer: {
+    marginTop: 0
   }
 })
