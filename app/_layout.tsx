@@ -30,7 +30,6 @@ export default function RootLayout() {
   }
 
   return (
-    <Auth0Provider domain={config.domain} clientId={config.clientId}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -39,6 +38,5 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
         </Stack>
       </ThemeProvider>
-    </Auth0Provider>
   );
 }
