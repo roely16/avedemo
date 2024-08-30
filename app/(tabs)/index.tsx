@@ -1,17 +1,27 @@
 import { StyleSheet, View, SafeAreaView, FlatList, SectionList } from 'react-native';
 import { Avatar, Button, Card, IconButton, Text } from 'react-native-paper';
+import { useRouter } from 'expo-router';
 import { Ongoing } from '@/components/protocols/ongoing';
 
 type Participant = {
-  avatarUrl: string;
+  avatarUrl?: string;
+}
+
+type Protocol = {
+  id: number;
+  name: string;
+  tasks: number;
+  participants?: Participant[] | null;
 }
 
 export default function HomeScreen() {
 
+  const router = useRouter();
+
   const Hello = () => {
     return (
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text variant="titleMedium">Hello <Text style={{ fontWeight: 'bold' }} variant="titleMedium">Jane</Text></Text>
+      <View style={styles.helloContainer}>
+        <Text variant="titleMedium">Hello <Text style={styles.boldText} variant="titleMedium">Jane</Text></Text>
         <IconButton
           icon="bell"
           iconColor="black"
@@ -19,7 +29,6 @@ export default function HomeScreen() {
           onPress={() => console.log('Pressed')}
           mode="contained"
         />
-
       </View>
     )
   }
@@ -29,7 +38,7 @@ export default function HomeScreen() {
       <>
         <Hello />
         <View style={styles.titleContainer}>
-          <Text style={{ fontWeight: 'bold' }} variant="displaySmall">{"Manage Your\nProtocols"}</Text>
+          <Text style={styles.boldText} variant="displaySmall">{"Manage Your\nProtocols"}</Text>
         </View>
       </>
     )
@@ -37,7 +46,7 @@ export default function HomeScreen() {
 
   const ProtocolSection = () => {
 
-    const protocols = [
+    const protocols: Protocol[] = [
       {
         id: 1,
         name: 'Emergency Alarm',
@@ -69,21 +78,21 @@ export default function HomeScreen() {
       }
     ];
 
-    const ProtocolCard = ({ tasks, name, participants = [] }: { tasks: number; name: string; participants: Array } ) => {
+    const handleOnPress = () => {
+      router.push('/protocol-detail');
+    };
 
-      const handleOnPress = () => {
-        console.log('Pressed');
-      };
+    const ProtocolCard = ({ tasks, name, participants = [] }: { tasks: number; name: string; participants?: Participant[] } ) => {
 
       return (
-        <Card onPress={() => handleOnPress()} style={{ width: '48%', marginBottom: 20 }} mode="contained">
+        <Card onPress={() => handleOnPress()} style={styles.card} mode="contained">
           <Card.Content>
-            <Text style={{ marginBottom: 10 }} variant="bodyMedium">{`${tasks} task`}</Text>
+            <Text style={styles.taskText} variant="bodyMedium">{`${tasks} task`}</Text>
             <Text variant="titleLarge">{name}</Text>
-            <View style={{ marginTop: 10, flexDirection: 'row' }}>
+            <View style={styles.avatarContainer}>
               {
                 participants.slice(0, 3).map((participant: Participant, index: number) => (
-                  <Avatar.Image source={{ uri: participant.avatarUrl }} style={{ marginRight: -5, zIndex: index }} key={index} size={32} />
+                  <Avatar.Image source={{ uri: participant.avatarUrl }} style={[styles.avatarImage, { zIndex: index }]} key={index} size={32} />
                 ))
               }
               {
@@ -91,7 +100,7 @@ export default function HomeScreen() {
                   <Avatar.Text
                     label={`+${participants.length - 3}`}
                     size={32}
-                    style={{ marginRight: -5, zIndex: participants.length, backgroundColor: '#cccccc' }}
+                    style={[styles.avatarText, { zIndex: participants.length }]}
                   />
                 )
               }
@@ -106,9 +115,9 @@ export default function HomeScreen() {
       <View>
         <View style={{ marginBottom: 20, justifyContent: 'space-between', flexDirection: 'row' }}>
           <Text style={{ fontWeight: 'bold' }} variant="titleLarge">Protocols</Text>
-          <Button contentStyle={{ flexDirection: 'row-reverse' }} icon="plus" style={{ borderRadius: 10 }} mode="text">Add</Button>
+          <Button onPress={handleOnPress} contentStyle={{ flexDirection: 'row-reverse' }} icon="plus" style={{ borderRadius: 10 }} mode="text">Add</Button>
         </View>
-        <FlatList columnWrapperStyle={{ justifyContent: 'space-between' }} numColumns={2} data={protocols} renderItem={({item}) => <ProtocolCard {...item} />}></FlatList>
+        <FlatList columnWrapperStyle={{ justifyContent: 'space-between' }} numColumns={2} data={protocols} renderItem={({item}) => <ProtocolCard tasks={item.tasks} name={item.name} participants={item.participants ?? []} />}></FlatList>
       </View>
     )
   };
@@ -131,17 +140,47 @@ export default function HomeScreen() {
   ]
   
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <View>
-        <SectionList style={{ padding: 20 }} ListHeaderComponent={<Title />} sections={SECTIONS} renderItem={({item}) => (item.children)} />
-      </View>
+    <SafeAreaView style={styles.container}>
+      <SectionList style={styles.sectionContainer} ListHeaderComponent={<Title />} sections={SECTIONS} renderItem={({item}) => (item.children)} />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff'
+  },
+  sectionContainer: {
+    padding: 20
+  },
   titleContainer: {
     marginTop: 20,
     marginBottom: 30
+  },
+  helloContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  boldText: {
+    fontWeight: 'bold'
+  },
+  card: {
+    width: '48%',
+    marginBottom: 20
+  },
+  taskText: {
+    marginBottom: 10
+  },
+  avatarContainer: {
+    marginTop: 10,
+    flexDirection: 'row'
+  },
+  avatarImage: {
+    marginRight: -5
+  },
+  avatarText: {
+    backgroundColor: '#cccccc',
+    marginRight: -5
   }
 });
