@@ -1,8 +1,15 @@
 import { View, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
 import { Text, Button, Icon, TextInput } from 'react-native-paper';
 import { Link } from 'expo-router';
+import { getAuth } from '@react-native-firebase/auth';
+import { useState } from 'react';
+
 
 export default function SignUp() {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const Header = () => {
     return (
@@ -18,7 +25,24 @@ export default function SignUp() {
     )
   }
 
-  const Form = () => {
+  const handleSignUp = async () => {
+    try {
+      const auth = getAuth();
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      return {
+        success: true,
+        user: userCredential.user
+      };
+    } catch (error: any) {
+      console.log(error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  };
+
+  const Form = (): React.ReactNode => {
     return (
       <View style={styles.formContainer}>
         <View style={styles.formInputContainer}>
@@ -27,7 +51,7 @@ export default function SignUp() {
         </View>
         <View style={styles.formInputContainer}>
           <Text variant='titleMedium'>Email</Text>
-          <TextInput keyboardType="email-address" dense mode="outlined" />
+          <TextInput onChangeText={setEmail} keyboardType="email-address" dense mode="outlined" />
         </View>
         <View style={styles.formInputContainer}>
           <Text variant='titleMedium'>Password</Text>
@@ -37,10 +61,11 @@ export default function SignUp() {
           <Text variant='titleMedium'>Confirm Password</Text>
           <TextInput secureTextEntry dense mode="outlined" />
         </View>
-        <Button style={styles.confirmButton} mode="contained">Register</Button>
+        <Button onPress={handleSignUp} style={styles.confirmButton} mode="contained">Register</Button>
       </View>
     )
   }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>

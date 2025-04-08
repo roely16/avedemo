@@ -1,9 +1,17 @@
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, Chip } from 'react-native-paper';
+import { useRouter } from 'expo-router';
 
 export const OngoingCard = () => {
+
+  const router = useRouter();
+
+  const handleOnPress = () => {
+    router.push('/protocol-ongoing');
+  };
+
   return (
-    <Card style={styles.card} mode="contained">
+    <Card onPress={handleOnPress} style={styles.card} mode="contained">
       <Card.Content>
         <View style={styles.cardHeader}>
           <Chip textStyle={styles.chipText} style={styles.chipContainer}>High priority</Chip>
