@@ -1,8 +1,12 @@
 import { View, SafeAreaView, StyleSheet } from 'react-native'
-import { Link, router } from 'expo-router';
-import { Text, TextInput, Button, Divider } from 'react-native-paper'
+import { Link } from 'expo-router';
+import { Text, Button, Divider } from 'react-native-paper'
+import { Form } from './login/components/Form';
+import { useLogin } from './login/hooks/useLogin';
 
 export default function Login(){
+
+  const { handleLogin, email, password, setEmail, setPassword, isLoading } = useLogin();
 
   const Header = () => {
     return (
@@ -12,26 +16,6 @@ export default function Login(){
       </View>
     )
   };
-
-  const Form = () => {
-
-    const onSubmit = async () => {
-      router.push('/(tabs)');
-    };
-    return (
-      <View style={styles.form}>
-        <View>
-          <Text variant='titleMedium'>Username</Text>
-          <TextInput dense mode="outlined" />
-        </View>
-        <View style={styles.passwordContainer}>
-          <Text variant='titleMedium'>Password</Text>
-          <TextInput dense secureTextEntry mode="outlined" />
-        </View>
-        <Button onPress={onSubmit} style={styles.confirmButton} mode="contained">Login</Button>
-      </View>
-    )
-  }
 
   const OptionsDivider = () => {
     return <Divider style={styles.divider} />;
@@ -61,7 +45,7 @@ export default function Login(){
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
         <Header />
-        <Form />
+        <Form email={email} setEmail={setEmail} password={password} setPassword={setPassword} onSubmit={handleLogin} isLoading={isLoading} />
         <OptionsDivider />
         <SocialLogin />
         <SignUpOption />
