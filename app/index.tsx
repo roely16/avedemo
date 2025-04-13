@@ -1,11 +1,16 @@
 import { View, SafeAreaView, StyleSheet } from 'react-native'
-import { Link } from 'expo-router';
+import { Link, SplashScreen } from 'expo-router';
 import { Text, Button, Divider } from 'react-native-paper'
 import { Form } from './login/components/Form';
 import { useLogin } from './login/hooks/useLogin';
+import { useAuthRedirect } from './login/hooks/useAuthRedirect';
+import { useEffect } from 'react';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function Login(){
 
+  const { isLoading: isLoadingAuth } = useAuthRedirect();
   const { handleLogin, email, password, setEmail, setPassword, isLoading } = useLogin();
 
   const Header = () => {
@@ -40,6 +45,21 @@ export default function Login(){
       </View>
     )
   };
+
+  useEffect(() => {
+    const hideSplashScreen = async () => {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      await SplashScreen.hideAsync();
+    };
+    
+    hideSplashScreen();
+  }, []);
+  
+  if (isLoadingAuth) {
+    return (
+      <View></View>
+    )
+  }
 
   return (
     <SafeAreaView style={styles.container}>
